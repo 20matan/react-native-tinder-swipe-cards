@@ -119,7 +119,7 @@ class SwipeCards extends Component {
         console.log("DX_DY", vx, vy, dx, dy);
         if ((Math.abs(dx) < 5)&&(Math.abs(dy) < 5))   //meaning the gesture did not cover any distance
         {
-          alert('tap');
+          this.props.onCardPress(this.state.card);
         }
 
         this.state.pan.flattenOffset();
@@ -245,6 +245,7 @@ class SwipeCards extends Component {
 SwipeCards.propTypes = {
     cards: React.PropTypes.array,
     renderCards: React.PropTypes.func,
+    onCardPress: React.PropTypes.func,
     loop: React.PropTypes.bool,
     renderNoMoreCards: React.PropTypes.func,
     showYup: React.PropTypes.bool,
