@@ -18,8 +18,6 @@ import Defaults from './Defaults.js';
 
 var SWIPE_THRESHOLD = 120;
 
-
-
 // Base Styles. Use props to override these values
 var styles = StyleSheet.create({
     container: {
@@ -113,13 +111,17 @@ class SwipeCards extends Component {
         this.state.pan.setValue({x: 0, y: 0});
       },
 
-      onPanResponderTerminationRequest: (evt, gestureState) => this.props.allowGestureTermination,
-      
       onPanResponderMove: Animated.event([
-        null, {dx: this.state.pan.x, dy: this.props.dragY ? this.state.pan.y : 0},
+        null, {dx: this.state.pan.x, dy: this.state.pan.y},
       ]),
 
-      onPanResponderRelease: (e, {vx, vy}) => {
+      onPanResponderRelease: (e, {vx, vy, dx, dy}) => {
+        console.log("DX_DY", vx, vy, dx, dy);
+        if ((Math.abs(dx) < 5)&&(Math.abs(dy) < 5))   //meaning the gesture did not cover any distance
+        {
+          alert('tap');
+        }
+
         this.state.pan.flattenOffset();
         var velocity;
 
@@ -128,7 +130,7 @@ class SwipeCards extends Component {
         } else if (vx < 0) {
           velocity = clamp(vx * -1, 3, 5) * -1;
         }
-        
+
         if (Math.abs(this.state.pan.x._value) > SWIPE_THRESHOLD) {
 
           this.state.pan.x._value > 0
@@ -244,7 +246,6 @@ SwipeCards.propTypes = {
     cards: React.PropTypes.array,
     renderCards: React.PropTypes.func,
     loop: React.PropTypes.bool,
-    allowGestureTermination: React.PropTypes.bool,
     renderNoMoreCards: React.PropTypes.func,
     showYup: React.PropTypes.bool,
     showNope: React.PropTypes.bool,
@@ -259,21 +260,18 @@ SwipeCards.propTypes = {
     yupStyle: View.propTypes.style,
     yupTextStyle: Text.propTypes.style,
     nopeStyle: View.propTypes.style,
-    nopeTextStyle: Text.propTypes.style,
-    dragY: React.PropTypes.bool
+    nopeTextStyle: Text.propTypes.style
 };
 
 SwipeCards.defaultProps = {
     loop: false,
     showYup: true,
     showNope: true,
-    allowGestureTermination: true,
     containerStyle: styles.container,
     yupStyle: styles.yup,
     yupTextStyle: styles.yupText,
     nopeStyle: styles.nope,
-    nopeTextStyle: styles.nopeText,
-    dragY: true
+    nopeTextStyle: styles.nopeText
 };
 
 export default SwipeCards
